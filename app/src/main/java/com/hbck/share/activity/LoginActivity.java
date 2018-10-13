@@ -1,9 +1,7 @@
 package com.hbck.share.activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -41,11 +39,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initData() {
-        SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
-        String username = sp.getString("username", "");
-        String password = sp.getString("password", "");
-        et_username.setText(username);
-        et_password.setText(password);
+        AVUser currentUser = AVUser.getCurrentUser();
+        if (currentUser != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
     }
 
     private void initView() {
@@ -90,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void login(String username, String password) {
+    private void login(final String username, final String password) {
         dialog = DialogUtil.createLoadingDialog(this, "登录中...");
         AVUser.logInInBackground(username, password, new LogInCallback<AVUser>() {
             @Override
